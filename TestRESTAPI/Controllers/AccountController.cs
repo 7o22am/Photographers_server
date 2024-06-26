@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using TestRESTAPI.Data.Models;
 using TestRESTAPI.Models;
+using Newtonsoft.Json.Linq;
 
 namespace TestRESTAPI.Controllers
 {
@@ -17,75 +18,77 @@ namespace TestRESTAPI.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        /// send email 
+        protected async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var fromEmail = "7o22am@gmail.com";
-            var fromPassword = "h022@m&..//";
-
-            var message = new MailMessage();
-            message.From = new MailAddress(fromEmail);
-            message.Subject = subject;
-            message.To.Add(email);
-            message.Body = $"<html><body>{htmlMessage}</body></html>";
-            message.IsBodyHtml = true;
-
-            var smtpClient = new SmtpClient("smtp.gmail.com")
+            try
             {
-                Port = 587,
-                EnableSsl = true,
-                Credentials = new NetworkCredential(fromEmail, "hzwv qqub oibv crby")
-            };
-            smtpClient.UseDefaultCredentials = false;
-            await smtpClient.SendMailAsync(message);
+                var fromEmail = "7o22am@gmail.com";
+                var fromPassword = "h022@m&..//";
+
+                var message = new MailMessage();
+                message.From = new MailAddress(fromEmail);
+                message.Subject = subject;
+                message.To.Add(email);
+                message.Body = $"<html><body>{htmlMessage}</body></html>";
+                message.IsBodyHtml = true;
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(fromEmail, "hzwv qqub oibv crby")
+                };
+                smtpClient.UseDefaultCredentials = false;
+                await smtpClient.SendMailAsync(message);
+            }
+            catch (Exception ex)
+            {
+
+            }
+           
         }
-
-
         public AccountController(UserManager<AppUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             this.configuration = configuration;
         }
-
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration configuration;
-
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterNewUser([FromForm] dtoNewUser user) 
+        public async Task<IActionResult> RegisterNewUser( dtoNewUser user)
         {
             string randomString = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 5).
                 Select(s => s[new Random().Next(s.Length)]).ToArray());
 
-            using var stream = new MemoryStream();
-            await user.image.CopyToAsync(stream);
-
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 AppUser appUser = new()
                 {
-                        UserName = user.email,
-                        Email = user.email,
-                        FullName = user.fullname,
-                        verfiyCode = randomString ,
-                        addries = user.addries,
-                        EmailConfirmed = false ,
-                         gender = user.gender,
-                         image = stream.ToArray(),
-                         link = user.link,
-                         location = user.location,
-                         PhoneNumber = user.phoneNumber,
-                         title = user.title,
-                          salary = user.salary,
-                          typeOfCam = user.typeOfCam,
-                           typeOfUser = user.typeOfUser,
-                            NationalId = user.NationalId,
-                            Nationality= user.Nationality,
-                     
+                    UserName = user.email,
+                    Email = user.email,
+                   FullName = user.fullname,
+                   verfiyCode = randomString,
+                    addries = user.addries,
+                    EmailConfirmed = false,
+                    gender = user.gender,
+                   link = user.link,
+                    location = user.location,
+                    PhoneNumber = user.phoneNumber,
+                    title = user.title,
+                    salary = user.salary,
+                    typeOfCam = user.typeOfCam,
+                    typeOfUser = user.typeOfUser,
+                    NationalId = user.NationalId,
+                    Nationality = user.Nationality,
+
                 };
                 IdentityResult result = await _userManager.CreateAsync(appUser, user.password);
                 if (result.Succeeded)
                 {
-                   await SendEmailAsync(user.email, "Confirm Email", "Your Code is ( " + randomString + " )");
-                    return Ok("Success");
+                    await SendEmailAsync(user.email, "Confirm Email", "Your Code is ( " + randomString + " )");
+
+                    return Ok(new { respone = "Sucess"});
                 }
                 else
                 {
@@ -100,17 +103,19 @@ namespace TestRESTAPI.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> LogIn(dtoLogin login)
-        { 
+        {
+            
             if (ModelState.IsValid) 
             {
-                AppUser? user = await _userManager.FindByEmailAsync(login.email);
+                AppUser? user = await _userManager.FindByEmailAsync(login.email.ToString());
                 if (user.EmailConfirmed == false ) {
-                    return Unauthorized();
+ 
+                    return Ok(new { respone = "Confirm email" });
                 }
 
                 if (user != null)
                 {
-                    if (await _userManager.CheckPasswordAsync(user, login.password))
+                    if (await _userManager.CheckPasswordAsync(user , login.password))
                     {
                         var claims = new List<Claim>();
                         //claims.Add(new Claim("name", "value"));
@@ -137,11 +142,13 @@ namespace TestRESTAPI.Controllers
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
                         };
-                        return Ok(_token);
+
+                        return Ok(new { respone = "Sucess" , _token });
                     }
                     else
                     {
-                        return Unauthorized();
+
+                        return Ok(new { respone = "Password Error" });
                     }
                 }
                 else
@@ -164,12 +171,14 @@ namespace TestRESTAPI.Controllers
 
                         user.EmailConfirmed = true;
                        await _userManager.UpdateAsync(user);
-                        return Ok("User Confirm Sucessfully");
+
+                        return Ok(new { respone = "User Confirm Sucessfully" });
+                       
                         
                     }
                     else
                     {
-                        return Unauthorized();
+                        return Ok(new { respone = "Code Error" });
                     }
                 }
                 else
@@ -182,7 +191,7 @@ namespace TestRESTAPI.Controllers
 
 
         [HttpPatch("UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromForm] dtoNewUser user)
+        public async Task<IActionResult> UpdateUser( dtoNewUser user)
         {
             if (ModelState.IsValid)
             {
@@ -206,13 +215,7 @@ namespace TestRESTAPI.Controllers
                 {
                     appUser.gender = user.gender;
                 }
-
-                if (user.image != null)
-                {
-                    using var stream = new MemoryStream();
-                    await user.image.CopyToAsync(stream);
-                    appUser.image = stream.ToArray();
-                }
+     
 
                 if (user.link != null)
                 {

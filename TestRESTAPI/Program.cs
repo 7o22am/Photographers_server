@@ -20,6 +20,9 @@ builder.Services.AddSwaggerGenJwtAuth();
 
 builder.Services.AddCustomJwtAuth(builder.Configuration);
 
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,5 +38,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors(x => x
+         .AllowAnyOrigin()
+         .AllowAnyMethod()
+         .AllowAnyHeader());
+
+app.UseHttpsRedirection();
 
 app.Run();
