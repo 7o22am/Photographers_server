@@ -16,6 +16,7 @@ namespace TestRESTAPI.Data.Models
         public string? Nationality { get; set; }
         public string? salary { get; set; }
         public string? link { get; set; }
+        public string? perHourTask { get; set; }
         public byte[]? image { get; set; }
         public string? rate { get; set; }
 

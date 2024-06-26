@@ -72,7 +72,8 @@ namespace TestRESTAPI.Controllers
                     addries = user.addries,
                     EmailConfirmed = false,
                     gender = user.gender,
-                   link = user.link,
+                    link = user.lastWork,
+                    perHourTask =user.perHourTask,
                     location = user.location,
                     PhoneNumber = user.phoneNumber,
                     title = user.title,
@@ -219,9 +220,9 @@ namespace TestRESTAPI.Controllers
                 }
      
 
-                if (user.link != null)
+                if (user.lastWork != null)
                 {
-                    appUser.link = user.link;
+                    appUser.link = user.lastWork;
                 }
 
                 if (user.location != null)

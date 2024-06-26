@@ -235,6 +235,9 @@ namespace TestRESTAPI.Migrations
                     b.Property<string>("location")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("perHourTask")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("rate")
                         .HasColumnType("nvarchar(max)");
 

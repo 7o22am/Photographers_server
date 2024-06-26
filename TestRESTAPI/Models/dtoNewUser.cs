@@ -22,7 +22,8 @@ namespace TestRESTAPI.Models
         public string? NationalId { get; set; }
         public string? Nationality { get; set; }
         public string? salary { get; set; }
-        public string? link { get; set; }
+        public string? lastWork { get; set; }
+        public string? perHourTask { get; set; }
         public IFormFile? image { get; set; }
         public string? rate { get; set; }
     }

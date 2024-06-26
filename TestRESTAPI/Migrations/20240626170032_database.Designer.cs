@@ -12,7 +12,7 @@ using TestRESTAPI.Data;
 namespace TestRESTAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240624202116_database")]
+    [Migration("20240626170032_database")]
     partial class database
     {
         /// <inheritdoc />
@@ -236,6 +236,9 @@ namespace TestRESTAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("perHourTask")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("rate")

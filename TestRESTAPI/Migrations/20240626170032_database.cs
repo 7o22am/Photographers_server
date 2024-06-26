@@ -42,6 +42,7 @@ namespace TestRESTAPI.Migrations
                     Nationality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     salary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     link = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    perHourTask = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     rate = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
