@@ -139,11 +139,12 @@ namespace TestRESTAPI.Controllers
                             );
                         var _token = new
                         {
+                            respone = "Sucess",
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
                         };
 
-                        return Ok(new { respone = "Sucess" , _token });
+                        return Ok(_token);
                     }
                     else
                     {
@@ -153,6 +154,7 @@ namespace TestRESTAPI.Controllers
                 }
                 else
                 {
+                    
                     ModelState.AddModelError("", "Email is invalid");
                 }
             }
