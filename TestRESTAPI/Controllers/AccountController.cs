@@ -11,6 +11,7 @@ using System.Text;
 using TestRESTAPI.Data.Models;
 using TestRESTAPI.Models;
 using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace TestRESTAPI.Controllers
 {
@@ -313,12 +314,12 @@ namespace TestRESTAPI.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpGet("GetUser")]
-        public async Task<IActionResult> GetUser(dtoDeleteUser user)
+        [HttpPost("GetUser/{id}")]
+        public async Task<IActionResult> GetUser(string id)
         {
             if (ModelState.IsValid)
             {
-                var appUser = await _userManager.FindByEmailAsync(user.email);
+                var appUser = await _userManager.FindByIdAsync(id);
                 if (appUser == null)
                 {
                     return NotFound("User not found.");
@@ -333,5 +334,23 @@ namespace TestRESTAPI.Controllers
         }
 
 
+        [HttpGet("GetAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            if (ModelState.IsValid)
+            {
+                var usersWithType = await _userManager.Users.Where(u => u.typeOfUser != null).ToListAsync();
+                if (usersWithType == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                return Ok(usersWithType);
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
     }
 }
