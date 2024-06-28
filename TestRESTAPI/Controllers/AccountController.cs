@@ -142,6 +142,7 @@ namespace TestRESTAPI.Controllers
                         var _token = new
                         {
                             respone = "Sucess",
+                            id = user.Id,
                             token = new JwtSecurityTokenHandler().WriteToken(token),
                             expiration = token.ValidTo,
                         };
@@ -195,7 +196,7 @@ namespace TestRESTAPI.Controllers
 
 
         [HttpPatch("UpdateUser")]
-        public async Task<IActionResult> UpdateUser( dtoNewUser user)
+        public async Task<IActionResult> UpdateUser( dtoUpdateUser user)
         {
             if (ModelState.IsValid)
             {
@@ -205,71 +206,65 @@ namespace TestRESTAPI.Controllers
                     return NotFound("User not found.");
                 }
 
-                if (user.fullname != null)
+                if (user.fullname != "")
                 {
                     appUser.FullName = user.fullname;
                 }
 
-                if (user.addries != null)
+                if (user.addries != "")
                 {
                     appUser.addries = user.addries;
                 }
 
-                if (user.gender != null)
+                if (user.gender != "")
                 {
                     appUser.gender = user.gender;
                 }
      
 
-                if (user.lastWork != null)
+                if (user.lastWork != "")
                 {
                     appUser.link = user.lastWork;
                 }
 
-                if (user.location != null)
+                if (user.location != "")
                 {
                     appUser.location = user.location;
                 }
 
-                if (user.phoneNumber != null)
+                if (user.phoneNumber != "")
                 {
                     appUser.PhoneNumber = user.phoneNumber;
                 }
 
-                if (user.title != null)
+                if (user.title != "")
                 {
                     appUser.title = user.title;
                 }
 
-                if (user.salary != null)
+                if (user.salary != "")
                 {
                     appUser.salary = user.salary;
                 }
 
-                if (user.typeOfCam != null)
+                if (user.typeOfCam != "")
                 {
                     appUser.typeOfCam = user.typeOfCam;
                 }
 
-                if (user.typeOfUser != null)
+                if (user.typeOfUser != "")
                 {
                     appUser.typeOfUser = user.typeOfUser;
                 }
 
-                if (user.NationalId != null)
-                {
-                    appUser.NationalId = user.NationalId;
-                }
 
-                if (user.Nationality != null)
-                {
-                    appUser.Nationality = user.Nationality;
-                }
+    
 
                 var result = await _userManager.UpdateAsync(appUser);
                 if (result.Succeeded)
                 {
-                    return Ok("User updated successfully.");
+                    return Ok(new { respone = "Sucess" });
+                    
                 }
                 else
                 {
