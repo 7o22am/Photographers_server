@@ -347,5 +347,28 @@ namespace TestRESTAPI.Controllers
 
             return BadRequest(ModelState);
         }
+
+
+        [HttpPost("Search")]
+        public async Task<IActionResult> Search( dtoSearch search)
+        {
+            if (ModelState.IsValid)
+            {
+                var usersSearch = await _userManager.Users.Where(u => (u.gender == search.gender || search.gender =="")
+                && (u.perHourTask == search.perHourTask || search.perHourTask == "")
+                && (u.typeOfCam == search.typeOfCam || search.typeOfCam == "")
+                &&   (u.location.Contains(search.location) || search.location == "")).ToListAsync();
+                if (usersSearch == null)
+                {
+                    return NotFound(" Not found Users");
+                }
+
+                 return Ok( new { respone = usersSearch });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
     }
 }
