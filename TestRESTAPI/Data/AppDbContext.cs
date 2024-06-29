@@ -11,6 +11,6 @@ namespace TestRESTAPI.Data
         
         }
 
-      
+        public DbSet<Orders> Orders { get; set; }
     }
 }
