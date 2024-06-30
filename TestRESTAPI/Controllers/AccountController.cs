@@ -12,6 +12,7 @@ using TestRESTAPI.Data.Models;
 using TestRESTAPI.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace TestRESTAPI.Controllers
 {
@@ -365,6 +366,43 @@ namespace TestRESTAPI.Controllers
 
                  return Ok( new { respone = usersSearch });
 
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+
+        [HttpPatch("ChangeImage")]
+        public async Task<IActionResult> ChangeImage( [FromForm] dtoImage NewImage)
+        {
+
+            if (ModelState.IsValid)
+            {
+              
+                var appUser = await _userManager.FindByEmailAsync( NewImage.email);
+
+                using var stream = new MemoryStream();
+                await NewImage.image.CopyToAsync(stream);
+
+
+                appUser.image = stream.ToArray();
+
+                var respone = await _userManager.UpdateAsync(appUser);
+                if (respone.Succeeded)
+                {
+                    return Ok(new { respone = "Sucess" });
+
+                }
+                else
+                {
+                    foreach (var error in respone.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
 
             }
 
