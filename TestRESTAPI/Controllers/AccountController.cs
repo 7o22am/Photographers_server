@@ -65,6 +65,12 @@ namespace TestRESTAPI.Controllers
 
             if (ModelState.IsValid)
             {
+                Boolean ans = false;
+                if (user.EmailConfirmed != null)
+                {
+                      ans =true;
+                }
+                        
                 AppUser appUser = new()
                 {
                     UserName = user.email,
@@ -72,7 +78,7 @@ namespace TestRESTAPI.Controllers
                    FullName = user.fullname,
                    verfiyCode = randomString,
                     addries = user.addries,
-                    EmailConfirmed = false,
+                    EmailConfirmed = ans,
                     gender = user.gender,
                     link = user.lastWork,
                     perHourTask =user.perHourTask,
@@ -84,8 +90,12 @@ namespace TestRESTAPI.Controllers
                     typeOfUser = user.typeOfUser,
                     NationalId = user.NationalId,
                     Nationality = user.Nationality,
+                    idTokn = user.idTokn,
+                    provider = user.provider,
 
                 };
+
+
                 IdentityResult result = await _userManager.CreateAsync(appUser, user.password);
                 if (result.Succeeded)
                 {

@@ -15,7 +15,7 @@ namespace TestRESTAPI.Models
         public string? verfiyCode { get; set; }
         public string? title { get; set; }
         public string? addries { get; set; }
-        public string? location { get; set; }
+        public string? location { get; set; } = "";
         public string? typeOfUser { get; set; }
         public string? typeOfCam { get; set; }
         public string? gender { get; set; }
@@ -26,5 +26,9 @@ namespace TestRESTAPI.Models
         public string? perHourTask { get; set; }
         public IFormFile? image { get; set; }
         public string? rate { get; set; }
+        public string? EmailConfirmed { get; set; } 
+
+        public string? idTokn { get; set; }
+        public string? provider { get; set; }
     }
 }
