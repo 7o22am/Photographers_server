@@ -51,5 +51,71 @@ namespace TestRESTAPI.Controllers
             }
           
         }
+
+
+        [HttpGet("GetUserOrders")]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var MyOrders = await   _db.Orders
+                        .Where(x => (x.photographer == id && x.stata == "pending") )
+                                  .Select(x => x)
+                                                 .ToListAsync();
+                if (MyOrders == null)
+                {
+                    return NotFound("NO Order Yet");
+                }
+
+                return Ok(new { respone = MyOrders });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+        [HttpGet("ChangeOrderStata")]
+        public async Task<IActionResult> ChangeOrderStata(string id , string stata)
+        {
+            if (ModelState.IsValid)
+            {
+                var orderToUpdate = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+
+                orderToUpdate.stata = stata;
+                await _db.SaveChangesAsync();
+
+                return Ok(new { respone = "success" });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+        [HttpGet("GetAcceptedUserOrders")]
+        public async Task<IActionResult> GetAcceptedUserOrders(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var MyOrders = await _db.Orders
+                        .Where(x => (x.photographer == id && x.stata == "accept"))
+                                  .Select(x => x)
+                                                 .ToListAsync();
+                if (MyOrders == null)
+                {
+                    return NotFound("NO Order Yet");
+                }
+
+                return Ok(new { respone = MyOrders });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
     }
 }

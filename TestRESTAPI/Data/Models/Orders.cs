@@ -12,6 +12,8 @@ namespace TestRESTAPI.Data.Models
         public string user { get; set; }
         [Required]
         public string photographer { get; set; }
+
+        public string? photographerName { get; set; }
         [Required]
         public string OrderData { get; set; }
         [Required]
@@ -22,6 +24,8 @@ namespace TestRESTAPI.Data.Models
 
         public string? location { get; set; }
         public int? phoneNumber { get; set; }
+        public string? stata { get; set; } = "pending";
+
 
     }
 }
