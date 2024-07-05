@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using TestRESTAPI.Models;
 
 [Route("api/[controller]")]
 [ApiController]
 public class PaymentController : ControllerBase
 {
     [HttpPost("create-payment-intent")]
-    public ActionResult CreatePaymentIntent()
+    public async Task<IActionResult> CreatePaymentIntent(dtoStripe amounts)
     {
+   
         var options = new PaymentIntentCreateOptions
         {
-            Amount = 1099, // amount in cents
-            Currency = "usd",
+            Amount = amounts.amount, // amount in cents
+            Currency = "SAR",
             PaymentMethodTypes = new List<string> { "card" },
         };
         var service = new PaymentIntentService();

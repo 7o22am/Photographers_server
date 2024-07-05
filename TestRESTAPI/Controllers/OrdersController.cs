@@ -23,13 +23,20 @@ namespace TestRESTAPI.Controllers
         [HttpPost("Pay")]
         public async Task<IActionResult> AddOrder( dtoOrder orderData )
         {
-            Orders order = new ()
+
+            Orders order = new()
             {
                 user = orderData.user,
                 photographer = orderData.photographer,
                 OrderData = orderData.OrderData,
-                typeOfTask= orderData.typeOfTask,
-                duration= orderData.duration
+                typeOfTask = orderData.typeOfTask,
+                duration = orderData.duration,
+                 invoice = orderData.invoice,
+                 phoneNumber =orderData.phoneNumber,
+                 location = orderData.location,
+                 photographerName = orderData.PhotographerName,
+
+                
             };
             await _db.Orders.AddAsync(order);
             await _db.SaveChangesAsync();
