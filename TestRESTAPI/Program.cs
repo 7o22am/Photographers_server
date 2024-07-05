@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TestRESTAPI.Data;
 using TestRESTAPI.Data.Models;
 using TestRESTAPI.Extentions;
-
+using Stripe;
+using TestRESTAPI.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,8 +21,7 @@ builder.Services.AddSwaggerGenJwtAuth();
 
 builder.Services.AddCustomJwtAuth(builder.Configuration);
 
-
-
+ StripeConfiguration.ApiKey = "sk_test_51PYyJN2Kx6SzcGxo6AnoLRJc0JZShrN2N0xAfILVfx5OERtPoHDE3dUcl117LofJPRtAIE9Y7vKX6Y3L7KVOXzhh00SiL4aTTU";
 
 var app = builder.Build();
 

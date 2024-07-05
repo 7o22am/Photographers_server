@@ -18,7 +18,7 @@ namespace TestRESTAPI.Data.Models
         public string? link { get; set; }
         public string? perHourTask { get; set; }
         public byte[]? image { get; set; }
-        public string? rate { get; set; }
+        public string? rate { get; set; } = "0";
         public string? idTokn { get; set; }
         public string? provider { get; set; }
 

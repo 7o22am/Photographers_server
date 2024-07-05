@@ -101,7 +101,7 @@ namespace TestRESTAPI.Controllers
             if (ModelState.IsValid)
             {
                 var MyOrders = await _db.Orders
-                        .Where(x => (x.photographer == id && x.stata == "accept"))
+                        .Where(x => (x.photographer == id && x.stata == "accept" && x.PayStata == "Done"))
                                   .Select(x => x)
                                                  .ToListAsync();
                 if (MyOrders == null)
@@ -117,5 +117,46 @@ namespace TestRESTAPI.Controllers
             return BadRequest(ModelState);
         }
 
+
+        [HttpGet("ReadyToPay")]
+        public async Task<IActionResult> ReadyToPay(string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var Myhire = await _db.Orders
+                        .Where(x => ((x.user == id )&& (x.stata == "accept") && (x.PayStata == "pending")))
+                                  .Select(x => x)
+                                                 .ToListAsync();
+                if (Myhire == null)
+                {
+                    return NotFound("NO hire Yet");
+                }
+
+                return Ok(new { respone = Myhire });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+
+        [HttpGet("ChangePayStata")]
+        public async Task<IActionResult> ChangePayStata(string id, string stata)
+        {
+            if (ModelState.IsValid)
+            {
+                var orderToUpdate = await _db.Orders.FirstOrDefaultAsync(x => x.Id == id);
+                orderToUpdate.PayStata = stata;
+                await _db.SaveChangesAsync();
+
+                return Ok(new { respone = "success" });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
     }
 }
