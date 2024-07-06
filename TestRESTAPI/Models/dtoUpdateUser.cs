@@ -6,11 +6,10 @@ namespace TestRESTAPI.Models
     {
 
  
-        public string fullname { get; set; }
+        public string? fullname { get; set; }
         public string? password { get; set; }
-
-        [Required]
-        public string email { get; set; }
+        public string? id { get; set; }
+        public string? email { get; set; }
 
         public string? phoneNumber { get; set; }
         public string? verfiyCode { get; set; }
@@ -25,6 +24,6 @@ namespace TestRESTAPI.Models
         public string? salary { get; set; }
         public string? lastWork { get; set; }
         public string? perHourTask { get; set; }
-        public string? rate { get; set; }
+        public int? rate { get; set; }
     }
 }

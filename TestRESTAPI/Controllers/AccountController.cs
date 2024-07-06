@@ -13,6 +13,9 @@ using TestRESTAPI.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using Castle.Core.Smtp;
+using TestRESTAPI.Data;
+using Microsoft.Extensions.Options;
 
 namespace TestRESTAPI.Controllers
 {
@@ -50,11 +53,13 @@ namespace TestRESTAPI.Controllers
             }
            
         }
-        public AccountController(UserManager<AppUser> userManager, IConfiguration configuration)
+        public AccountController(UserManager<AppUser> userManager, IConfiguration configuration , IOptions<AppSetting> appSettings)
         {
             _userManager = userManager;
             this.configuration = configuration;
+            _appSettings = appSettings.Value;
         }
+        private readonly AppSetting _appSettings;
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration configuration;
         [HttpPost("Register")]
@@ -293,6 +298,42 @@ namespace TestRESTAPI.Controllers
             return BadRequest(ModelState);
         }
 
+        [HttpPatch("UpdateRate")]
+        public async Task<IActionResult> UpdateRate(dtoUpdateUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                var appUser = await _userManager.FindByIdAsync(user.id);
+                if (appUser == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                float x = (float)user.rate;
+                float y = float.Parse(appUser.rate);
+                x =( x + y )/ 2;
+
+                appUser.rate = x.ToString();
+              
+                var result = await _userManager.UpdateAsync(appUser);
+                if (result.Succeeded)
+                {
+                    return Ok(new { respone = "Sucess" });
+
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return BadRequest(ModelState);
+                }
+            }
+
+            return BadRequest(ModelState);
+        }
+
 
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser(dtoDeleteUser user)
@@ -421,5 +462,62 @@ namespace TestRESTAPI.Controllers
 
             return BadRequest(ModelState);
         }
+
+
+        [HttpGet("changePassword")]
+        public async Task<IActionResult> ChangePassword(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    return Ok(new { response = "User not found" });
+                }
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resetPasswordLink = $"{_appSettings.BaseUrl}/api/Account/resetPassword?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(user.Email)}";
+
+                await  SendEmailAsync(user.Email, "Password Reset", $"Please reset your password by clicking here: <a href='{resetPasswordLink}'>link</a>");
+
+                return Ok(new { response = "ok" });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return StatusCode(500, new { response = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] dtoForgetPassword model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return Ok(new { response = "Password reset email sent. Please check your email." });
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return Ok(new { response = "Password has been reset successfully." });
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return BadRequest(ModelState);
+        }
     }
+
 }
