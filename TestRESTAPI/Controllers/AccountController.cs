@@ -267,9 +267,12 @@ namespace TestRESTAPI.Controllers
                 {
                     appUser.typeOfUser = user.typeOfUser;
                 }
+                if (user.Nationality != "")
+                {
+                    appUser.Nationality = user.Nationality;
+                }
 
 
-    
 
                 var result = await _userManager.UpdateAsync(appUser);
                 if (result.Succeeded)

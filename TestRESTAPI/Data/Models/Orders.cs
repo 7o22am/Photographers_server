@@ -29,5 +29,9 @@ namespace TestRESTAPI.Data.Models
 
         public string? PayStata { get; set; } = "pending";
 
+        public string? feedback { get; set; } 
+
+        public string? rate { get; set; } = "pending";
+
     }
 }

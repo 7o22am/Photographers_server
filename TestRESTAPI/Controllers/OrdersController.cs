@@ -165,5 +165,52 @@ namespace TestRESTAPI.Controllers
 
             return BadRequest(ModelState);
         }
+
+
+
+        [HttpPost("Feedbacks")]
+        public async Task<IActionResult> Feedbacks(dtoFeedbacks feedbacks)
+        {
+            if (ModelState.IsValid)
+            {
+                var orderToUpdate = await _db.Orders.FirstOrDefaultAsync(x => x.Id == feedbacks.id);
+                orderToUpdate.feedback = feedbacks.feedback;
+                orderToUpdate.rate = feedbacks.rate;
+                await _db.SaveChangesAsync();
+
+                return Ok(new { respone = "success" });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+
+
+        [HttpGet("ReadyToFeedbacks")]
+        public async Task<IActionResult> ReadyToFeedbacks( string id)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var MyFeedback = await _db.Orders
+                                     .Where(x => ((x.user == id) && (x.stata == "Finished") && (x.PayStata == "Done")
+                                      && (x.feedback == null)))
+                                               .Select(x => x)
+                                                              .ToListAsync();
+                if (MyFeedback == null)
+                {
+                    return NotFound("NO hire Yet");
+                }
+
+                return Ok(new { respone = MyFeedback });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
     }
 }
