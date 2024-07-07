@@ -16,7 +16,7 @@ namespace TestRESTAPI.Models
         public string? duration { get; set; }
 
         public int? invoice { get; set; }
-        public int? phoneNumber { get; set; }
+        public string? phoneNumber { get; set; }
         public string? PhotographerName { get; set; }
         public string? location { get; set; }  
     }

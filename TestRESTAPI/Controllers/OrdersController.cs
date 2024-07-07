@@ -32,7 +32,7 @@ namespace TestRESTAPI.Controllers
                 typeOfTask = orderData.typeOfTask,
                 duration = orderData.duration,
                  invoice = orderData.invoice,
-                 phoneNumber =orderData.phoneNumber,
+                 phoneNumber = orderData.phoneNumber,
                  location = orderData.location,
                  photographerName = orderData.PhotographerName,
 

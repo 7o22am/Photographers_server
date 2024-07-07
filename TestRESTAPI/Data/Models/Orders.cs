@@ -23,7 +23,7 @@ namespace TestRESTAPI.Data.Models
          public int ? invoice { get; set; }
 
         public string? location { get; set; }
-        public int? phoneNumber { get; set; }
+        public string? phoneNumber { get; set; }
         public string? stata { get; set; } = "pending";
 
 
