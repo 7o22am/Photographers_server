@@ -187,8 +187,6 @@ namespace TestRESTAPI.Controllers
         }
 
 
-
-
         [HttpGet("ReadyToFeedbacks")]
         public async Task<IActionResult> ReadyToFeedbacks( string id)
         {
@@ -212,5 +210,30 @@ namespace TestRESTAPI.Controllers
 
             return BadRequest(ModelState);
         }
+
+        [HttpGet("showFeedbacks")]
+        public async Task<IActionResult> showFeedbacks(string id)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var feedbacks = await _db.Orders
+                               .Where(x => (x.photographer == id) && x.stata == "Finished")
+                                           .Select(x => new { x.feedback, x.rate ,x.UserName  })
+                                                                     .ToListAsync();
+
+                if (feedbacks == null)
+                {
+                    return NotFound("NO Feedbacks founded");
+                }
+
+                return Ok(new { respone = feedbacks });
+
+
+            }
+
+            return BadRequest(ModelState);
+        }
+
     }
 }

@@ -13,6 +13,7 @@ namespace TestRESTAPI.Data.Models
         [Required]
         public string photographer { get; set; }
 
+        public string? UserName { get; set; }
         public string? photographerName { get; set; }
         [Required]
         public string OrderData { get; set; }
