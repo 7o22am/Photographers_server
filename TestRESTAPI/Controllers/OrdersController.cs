@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace TestRESTAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
 
@@ -20,7 +22,7 @@ namespace TestRESTAPI.Controllers
 
         private readonly AppDbContext _db;
 
-        [HttpPost("Pay")]
+        [HttpPost("makeOrder")]
         public async Task<IActionResult> AddOrder( dtoOrder orderData )
         {
 
@@ -35,8 +37,9 @@ namespace TestRESTAPI.Controllers
                  phoneNumber = orderData.phoneNumber,
                  location = orderData.location,
                  photographerName = orderData.PhotographerName,
+                 UserName =orderData.UserName
 
-                
+
             };
             await _db.Orders.AddAsync(order);
             await _db.SaveChangesAsync();
